@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "0.0.1",
   "name": "@soorria/solid-dropzone",
   "description": "Drag and drop file input library for SolidJS.",
   "license": "MIT",
