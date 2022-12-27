@@ -1,17 +1,17 @@
 {
   "version": "0.0.0",
-  "name": "{{name_of_lib}}",
-  "description": "{{desc_of_lib}}",
+  "name": "solid-dropzone",
+  "description": "Drag and drop file input library for SolidJS.",
   "license": "MIT",
-  "author": "{{me}}",
+  "author": "Soorria Saruva <soorria.ss@gmail.com> (http://soorria.com/)",
   "contributors": [],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/{{me}}/{{name_of_lib}}.git"
+    "url": "git+https://github.com/soorria/solid-dropzone.git"
   },
-  "homepage": "https://github.com/{{me}}/{{name_of_lib}}#readme",
+  "homepage": "https://github.com/soorria/solid-dropzone#readme",
   "bugs": {
-    "url": "https://github.com/{{me}}/{{name_of_lib}}/issues"
+    "url": "https://github.com/soorria/solid-dropzone/issues"
   },
   "private": false,
   "sideEffects": false,
@@ -43,7 +43,10 @@
     "update-deps": "taze -w && pnpm i",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "attr-accept": "^2.2.2",
+    "file-selector": "^0.6.0"
+  },
   "peerDependencies": {
     "solid-js": ">=1.0.0"
   },
@@ -51,9 +54,9 @@
     "prettier": "2.7.1",
     "rollup": "^2.77.2",
     "rollup-preset-solid": "^1.4.0",
-    "typescript": "^4.7.4",
     "solid-js": "^1.4.8",
     "taze": "^0.7.6",
+    "typescript": "^4.7.4",
     "vite": "^3.0.4",
     "vite-plugin-solid": "^2.3.0"
   },
