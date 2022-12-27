@@ -627,7 +627,7 @@ function isPropagationStopped(event: Event) {
 
 function isEvtWithFiles(event: DragEvent | DropEvent) {
   if (!('dataTransfer' in event) || !event.dataTransfer) {
-    return !!event.target && 'files' in event.target && event.target.files
+    return !!event.target && 'files' in event.target && !!(event.target as any).files
   }
   // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/types
   // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types#file
