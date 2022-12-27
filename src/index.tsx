@@ -157,7 +157,6 @@ export const createDropzone = (_props: CreateDropzoneProps) => {
 
   let dragTargets: HTMLElement[] = []
   const onDocumentDrop = (event: DropEvent) => {
-    console.log('doc drop')
     const root = rootRef()
     if (root && root.contains(event.target as Node)) {
       // If we intercepted an event for our instance, let it propagate down to the instance's onDrop handler
@@ -331,14 +330,10 @@ export const createDropzone = (_props: CreateDropzoneProps) => {
       acceptedFiles.splice(0)
     }
 
-    console.log({ fileRejections })
-
     setState({
       acceptedFiles,
       fileRejections,
     })
-
-    console.log({ rejs: state.fileRejections })
 
     props.onDrop?.(acceptedFiles, fileRejections, event)
   }
