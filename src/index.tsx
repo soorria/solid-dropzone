@@ -727,9 +727,11 @@ function pickerOptionsFromAccept(accept: AcceptProp | undefined) {
  */
 function acceptPropAsAcceptAttr(accept: AcceptProp | undefined): string | undefined {
   if (isDefined(accept)) {
+    const rawAcceptArray = Array.isArray(accept)
+      ? accept
+      : (Object.entries(accept).flat(Infinity) as string[])
     return (
-      Object.entries(accept)
-        .reduce((a, [mimeType, ext]) => [...a, mimeType, ...ext], [] as string[])
+      rawAcceptArray
         // Silently discard invalid entries as pickerOptionsFromAccept warns about these
         .filter(v => isMIMEType(v) || isExt(v))
         .join(',')
