@@ -129,7 +129,9 @@ export const createDropzone = (_props: CreateDropzoneProps) => {
   const [state, setState] = createStore(getInitialState())
 
   const acceptAttr = createMemo(() => acceptPropAsAcceptAttr(props.accept))
-  const pickerTypes = createMemo(() => pickerOptionsFromAccept(props.accept))
+  const pickerTypes = createMemo(() =>
+    props.useFsAccessApi ? pickerOptionsFromAccept(props.accept) : undefined,
+  )
 
   const [rootRef, setRootRef] = createSignal<HTMLElement | null>()
   const [inputRef, setInputRef] = createSignal<HTMLInputElement | null>()
