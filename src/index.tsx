@@ -66,7 +66,6 @@ export type DropzoneInputProps = RemoveBoundEventHandlers<ComponentProps<'input'
 export type CreateDropzoneProps = RemoveBoundEventHandlers<
   Pick<ComponentProps<'input'>, 'multiple' | 'onDragEnter' | 'onDragOver' | 'onDragLeave'>
 > & {
-  accept?: AcceptProp
   minSize?: number
   maxSize?: number
   maxFiles?: number
@@ -82,12 +81,17 @@ export type CreateDropzoneProps = RemoveBoundEventHandlers<
   onFileDialogCancel?: () => void
   onFileDialogOpen?: () => void
   validator?: <T extends File>(file: T) => FileError | FileError[] | null
-  useFsAccessApi?: boolean
   onError?: (error: unknown) => void
-}
+
+  // useFsAccessApi?: boolean
+  // accept?: AcceptProp
+} & (
+    | { useFsAccessApi: true; accept?: Record<string, string[]> }
+    | { useFsAccessApi?: false; accept?: string | string[] }
+  )
 export type CreateDropzoneResult = ReturnType<typeof createDropzone>
 
-type AcceptProp = string | string[]
+type AcceptProp = NonNullable<CreateDropzoneProps['accept']>
 
 const noop = () => {}
 
@@ -115,7 +119,7 @@ export const createDropzone = (_props: CreateDropzoneProps) => {
       noDrag: false,
       noDragEventsBubbling: false,
       validator: null,
-      useFsAccessApi: true,
+      useFsAccessApi: false,
       autoFocus: false,
       accept: '',
     },
@@ -562,7 +566,8 @@ type FileErrorResult = [false, FileError] | [true, null]
 // Firefox versions prior to 53 return a bogus MIME type for every file drag, so dragovers with
 // that MIME type will always be accepted
 function fileAccepted(file: File, accept: AcceptProp): FileErrorResult {
-  const isAcceptable = file.type === 'application/x-moz-file' || accepts(file, accept)
+  const isAcceptable =
+    file.type === 'application/x-moz-file' || accepts(file, getRawAcceptArray(accept))
   if (isAcceptable) return [true, null]
   return [false, getInvalidTypeRejectionErr(accept)]
 }
@@ -684,31 +689,26 @@ function canUseFileSystemAccessAPI(): boolean {
 
 function pickerOptionsFromAccept(accept: AcceptProp | undefined) {
   if (isDefined(accept)) {
-    const acceptForPicker = Object.entries(accept)
-      .filter(([mimeType, ext]) => {
-        let ok = true
-
-        if (!isMIMEType(mimeType)) {
+    const acceptForPicker: Record<string, string[]> = {}
+    Object.entries(accept).forEach(([mimeType, ext]) => {
+      if (!isMIMEType(mimeType)) {
+        if (DEV) {
           console.warn(
             `Skipped "${mimeType}" because it is not a valid MIME type. Check https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types for a list of valid MIME types.`,
           )
-          ok = false
         }
+        return
+      }
 
-        if (!Array.isArray(ext) || !ext.every(isExt)) {
+      if (!Array.isArray(ext) || !ext.every(isExt)) {
+        if (DEV) {
           console.warn(`Skipped "${mimeType}" because an invalid file extension was provided.`)
-          ok = false
         }
+        return
+      }
 
-        return ok
-      })
-      .reduce(
-        (agg, [mimeType, ext]) => ({
-          ...agg,
-          [mimeType]: ext,
-        }),
-        {},
-      )
+      acceptForPicker[mimeType] = ext as unknown as string[]
+    })
     return [
       {
         // description is required due to https://crbug.com/1264708
@@ -720,6 +720,16 @@ function pickerOptionsFromAccept(accept: AcceptProp | undefined) {
   return accept
 }
 
+const getRawAcceptArray = (accept: AcceptProp): string[] => {
+  if (Array.isArray(accept)) {
+    return accept
+  }
+  if (typeof accept === 'string') {
+    return [accept]
+  }
+  return Object.entries(accept).flat(Infinity) as string[]
+}
+
 /**
  * Convert the `{accept}` dropzone prop to an array of MIME types/extensions.
  * @param accept
@@ -727,11 +737,8 @@ function pickerOptionsFromAccept(accept: AcceptProp | undefined) {
  */
 function acceptPropAsAcceptAttr(accept: AcceptProp | undefined): string | undefined {
   if (isDefined(accept)) {
-    const rawAcceptArray = Array.isArray(accept)
-      ? accept
-      : (Object.entries(accept).flat(Infinity) as string[])
     return (
-      rawAcceptArray
+      getRawAcceptArray(accept)
         // Silently discard invalid entries as pickerOptionsFromAccept warns about these
         .filter(v => isMIMEType(v) || isExt(v))
         .join(',')
