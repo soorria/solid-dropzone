@@ -568,8 +568,9 @@ type FileErrorResult = [false, FileError] | [true, null]
 // Firefox versions prior to 53 return a bogus MIME type for every file drag, so dragovers with
 // that MIME type will always be accepted
 function fileAccepted(file: File, accept: AcceptProp): FileErrorResult {
+  const acceptArray = getRawAcceptArray(accept)
   const isAcceptable =
-    file.type === 'application/x-moz-file' || accepts(file, getRawAcceptArray(accept))
+    file.type === 'application/x-moz-file' || accepts(file, acceptArray.length ? acceptArray : '')
   if (isAcceptable) return [true, null]
   return [false, getInvalidTypeRejectionErr(accept)]
 }
@@ -723,13 +724,15 @@ function pickerOptionsFromAccept(accept: AcceptProp | undefined) {
 }
 
 const getRawAcceptArray = (accept: AcceptProp): string[] => {
+  let array
   if (Array.isArray(accept)) {
-    return accept
+    array = accept
+  } else if (typeof accept === 'string') {
+    array = accept.split(',')
+  } else {
+    array = Object.entries(accept).flat(Infinity) as string[]
   }
-  if (typeof accept === 'string') {
-    return [accept]
-  }
-  return Object.entries(accept).flat(Infinity) as string[]
+  return array.filter(Boolean)
 }
 
 /**
