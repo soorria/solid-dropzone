@@ -104,7 +104,7 @@ const getInitialState = () => ({
   acceptedFiles: [] as File[],
   fileRejections: [] as FileRejection[],
 })
-export const createDropzone = (_props: CreateDropzoneProps) => {
+export const createDropzone = (_props: CreateDropzoneProps = {}) => {
   const props = mergeProps(
     {
       disabled: false,
