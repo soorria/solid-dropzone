@@ -1,10 +1,9 @@
 import { Component, splitProps, For, mergeProps, Show, ComponentProps } from 'solid-js'
 import { createDropzone, CreateDropzoneProps, DropEvent, FileRejection } from '../src'
 
-const Dropzone = (props: Partial<CreateDropzoneProps> & { title: string }) => {
-  const [local, dropzoneProps] = splitProps(props, ['title'])
+const Dropzone = (props: CreateDropzoneProps & { title: string }) => {
   const dropzone = createDropzone(
-    mergeProps(dropzoneProps, {
+    mergeProps(props, {
       onDrop: (files: File[], rejections: FileRejection[], event: DropEvent | null) => {
         props.onDrop?.(files, rejections, event)
       },
@@ -15,7 +14,7 @@ const Dropzone = (props: Partial<CreateDropzoneProps> & { title: string }) => {
 
   return (
     <div class="space-y-6">
-      <h2 class="font-bold text-2xl">{local.title}</h2>
+      <h2 class="font-bold text-2xl">{props.title}</h2>
       <div
         {...dropzone.getRootProps({
           class: 'rounded-xl border-2 border-purple-700 min-h-[8rem] relative overflow-hidden',

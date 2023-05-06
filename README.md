@@ -8,22 +8,48 @@
 
 Drag and drop file input library for SolidJS.
 
-> **Note**: This is a port of [`react-dropzone`](https://github.com/react-dropzone/react-dropzone)
+> **Note**: This is a SolidJS port of [`react-dropzone`](https://github.com/react-dropzone/react-dropzone)
 
 ## Quick start
 
 Install it:
 
 ```bash
-npm i solid-dropzone
+npm i @soorria/solid-dropzone
 # or
-yarn add solid-dropzone
+yarn add @soorria/solid-dropzone
 # or
-pnpm add solid-dropzone
+pnpm add @soorria/solid-dropzone
 ```
 
 Use it:
 
 ```tsx
-import { createDropzone } from 'solid-dropzone'
+import { createDropzone } from '@soorria/solid-dropzone'
+```
+
+## Example
+
+> Adapted from the first example here: https://github.com/react-dropzone/react-dropzone/#usage
+
+```tsx
+import { useDropzone } from '@soorria/solid-dropzone'
+
+function MyDropzone() {
+  const onDrop = (acceptedFiles: File[]) => {
+    // Do something with the files
+  }
+  const dropzone = useDropzone({ onDrop })
+
+  return (
+    <div {...dropzone.getRootProps()}>
+      <input {...dropzone.getInputProps()} />
+      {
+        dropzone.isDragActive ?
+          <p>Drop the files here ...</p> :
+          <p>Drag 'n' drop some files here, or click to select files</p>
+      }
+    </div>
+  )
+}
 ```
