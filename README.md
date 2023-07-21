@@ -33,13 +33,13 @@ import { createDropzone } from '@soorria/solid-dropzone'
 > Adapted from the first example here: https://github.com/react-dropzone/react-dropzone/#usage
 
 ```tsx
-import { useDropzone } from '@soorria/solid-dropzone'
+import { createDropzone } from '@soorria/solid-dropzone'
 
 function MyDropzone() {
   const onDrop = (acceptedFiles: File[]) => {
     // Do something with the files
   }
-  const dropzone = useDropzone({ onDrop })
+  const dropzone = createDropzone({ onDrop })
 
   return (
     <div {...dropzone.getRootProps()}>
