@@ -1,4 +1,4 @@
-/*!
+/*
  * Original code by Param Aggarwal
  * MIT Licensed, Copyright (c) 2018 Param Aggarwal, see
  * https://github.com/react-dropzone/react-dropzone/blob/master/LICENSE for details
@@ -21,7 +21,7 @@ import {
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { fromEvent } from 'file-selector'
-import accepts from 'attr-accept'
+import accepts from './attr-accept'
 
 export type ErrorCode =
   | 'file-invalid-type'
